@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Quick Start Guide</title>
+
+    <!-- 1. Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@2.0.0-alpha.1/dist/leaflet.css" integrity="sha256-P+hWJNlpL+GBSRYC7cdsDbQH91URmpDeOzLp7DbFRtE=" crossorigin=""/>
+
+    <!-- 2. Importmap định nghĩa đường dẫn tải Leaflet ES Module -->
+    <script type="importmap">
+    {
+        "imports": {
+            "leaflet": "https://cdn.jsdelivr.net/npm/leaflet@2.0.0-alpha.1/dist/leaflet.js"
+        },
+        "integrity": {
+            "https://cdn.jsdelivr.net/npm/leaflet@2.0.0-alpha.1/dist/leaflet.js": "sha256-gj5JhNAaMi6LCs+jVFOk8sXDe1sWSS2Zlc87m+trLiQ="
+        }
+    }
+    </script>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Bản đồ co giãn theo kích thước màn hình người dùng */
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Khung chứa bản đồ -->
+    <div id="map"></div>
+
+    <!-- Script triển khai toàn bộ hướng dẫn -->
+    <script type="module">
+        import { LeafletMap, TileLayer, Marker, Circle, Polygon, Popup } from 'leaflet';
+
+        // 1. Khởi tạo bản đồ tại toạ độ Hà Nội [21.0285, 105.8542] với zoom level 13
+        const map = new LeafletMap('map').setView([21.0285, 105.8542], 13);
+
+        // 2. Thêm lớp nền OpenStreetMap (TileLayer)
+        new TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+        }).addTo(map);
+
+        // 3. Bắt sự kiện Click vào bản đồ để hiển thị toạ độ
+        const clickPopup = new Popup();
+        function onMapClick(e) {
+            clickPopup
+                .setLatLng(e.latlng)
+                .setContent("You clicked the map at " + e.latlng.toString())
+                .openOn(map);
+        }
+        map.on('click', onMapClick);
+
+        // 4. Cập nhật lại kích thước bản đồ khi màn hình thay đổi
+        window.addEventListener('resize', () => {
+            map.invalidateSize();
+        });
+    </script>
+</body>
+</html>
